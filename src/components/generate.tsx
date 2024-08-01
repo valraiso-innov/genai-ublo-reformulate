@@ -35,6 +35,7 @@ const GeneratePage: React.FC<GeneratePromps> = ({
 
   const disabled = !isSelected || !selection;
   const parameters = reformulationWithHistory.current.parameters;
+  const active = reformulationWithHistory.current.isAdditionalSettings;
 
   const generate = async () => {
     setLoading(true);
@@ -47,9 +48,9 @@ const GeneratePage: React.FC<GeneratePromps> = ({
         parameters.examples,
         parameters.provider,
         parameters.model,
-        parameters.length,
-        parameters.keywords,
-        parameters.forbiddenWords,
+        active.isLengthEnabled ? parameters.length : undefined,
+        active.isKeywordsEnabled ? parameters.keywords : undefined,
+        active.isForbiddenEnabled ? parameters.forbiddenWords : undefined,
       );
       await userAction("rephrase-generate", {
         textIn: reformulationWithHistory.current.textIn,
