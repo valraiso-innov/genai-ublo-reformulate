@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { generateText, callReformulateApi } from "@/utils/generate-text";
 import {
   RiMagicLine,
@@ -12,8 +12,8 @@ import {
 } from "@remixicon/react";
 import HistoricButton from "@/components/historic-button";
 import useSelection from "@/hooks/use-selection";
-import autosizeTextArea from "@/utils/autosize-text-area";
 import { userAction, userFeedback } from "@/services/analytics-api";
+import useAutosize from "@/hooks/use-autosize";
 
 interface GeneratePromps {
   dispatch: React.Dispatch<Action>;
@@ -118,25 +118,8 @@ const GeneratePage: React.FC<GeneratePromps> = ({
     setLoading(false);
   };
 
-  useEffect(() => {
-    autosizeTextArea(textInRef);
-    autosizeTextArea(textOutRef);
-  }, [
-    reformulationWithHistory.current.textIn,
-    reformulationWithHistory.current.textOut,
-  ]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      autosizeTextArea(textInRef);
-      autosizeTextArea(textOutRef);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  useAutosize(reformulationWithHistory.current.textIn, textInRef);
+  useAutosize(reformulationWithHistory.current.textOut, textOutRef);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (reformulationWithHistory.current.action === "") {

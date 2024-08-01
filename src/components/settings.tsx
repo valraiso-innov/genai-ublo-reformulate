@@ -80,7 +80,7 @@ const SettingsPage: React.FC<SettingsProps> = ({
         <div className="mb-4">
           <div className="flex items-center mb-2">
             <label className="block text-lg font-medium text-gray-700 mr-2">
-              Longueur du texte
+              Longueur du texte en mots
             </label>
             <input
               type="checkbox"
@@ -105,7 +105,7 @@ const SettingsPage: React.FC<SettingsProps> = ({
         <div className="mb-4">
           <div className="flex items-center mb-2">
             <label className="block text-lg font-medium text-gray-700 mr-2">
-              Mots-clés
+              Mots-clés à utiliser dans le texte
             </label>
             <input
               type="checkbox"
@@ -127,14 +127,14 @@ const SettingsPage: React.FC<SettingsProps> = ({
                 )
               }
               className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Entrez les mots-clés séparés par des virgules"
+              placeholder="Entrez les mots-clés séparés par des virgules, utilisez des guillemets pour mettre des espaces, exemple : ‘descente aux flambeaux’"
             />
           )}
         </div>
         <div>
           <div className="flex items-center mb-2">
             <label className="block text-lg font-medium text-gray-700 mr-2">
-              Mots interdits
+              Mots interdits dans le texte
             </label>
             <input
               type="checkbox"
@@ -157,7 +157,7 @@ const SettingsPage: React.FC<SettingsProps> = ({
                   )
                 }
                 className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Entrez les mots interdits séparés par des virgules"
+                placeholder="Entrez les mots interdits séparés par des virgules, utilisez des guillemets pour mettre des espaces, exemple : ‘descente aux flambeaux’"
               />
             )}
         </div>

@@ -5,6 +5,7 @@ const PROMPT_MAIN = (length?: number, keywords?: string[], forbiddenWords?: stri
   Embrace creativity and think outside the box to enhance the overall appeal and originality of the text.
   ${keywords && keywords.length > 0 ? `You MUST use the following keywords: ${keywords.join(", ")}` : ""}
   ${forbiddenWords && forbiddenWords.length > 0 ? `The following words are prohibited, you MUST NOT use them: ${forbiddenWords.join(", ")}` : ""}
+  Do not include markdown specifically NO bold "**". 
 
   Instructions:
 
