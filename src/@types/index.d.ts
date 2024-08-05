@@ -34,6 +34,13 @@ interface Example {
   assistant: string;
 }
 
+interface ExamplePresets {
+  "Description Reformulation": Example[];
+  "Ublo Reformulation": Example[];
+}
+
+type PresetName = keyof ExamplePresets;
+
 type Message = {
   role: "user" | "assistant" | "system";
   content: string;

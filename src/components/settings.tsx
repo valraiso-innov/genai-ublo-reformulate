@@ -163,7 +163,7 @@ const SettingsPage: React.FC<SettingsProps> = ({
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border">
+      <div className="relative bg-white p-4 rounded-lg border">
         <label className="block text-lg font-medium text-gray-700 mb-2">
           Nombre d&apos;exemples (0-3)
         </label>
