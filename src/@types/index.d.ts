@@ -27,6 +27,7 @@ type Reformulation = {
   action: string;
   parameters: ParametersLLM;
   isAdditionalSettings: AdditionalSettingsEnabled;
+  rating?: "like" | "dislike";
 };
 
 interface Example {

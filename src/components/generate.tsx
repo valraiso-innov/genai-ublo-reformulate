@@ -3,7 +3,9 @@
 import React, { useRef, useState } from "react";
 import { generateText, callReformulateApi } from "@/utils/generate-text";
 import {
+  RiMagicFill,
   RiMagicLine,
+  RiSparklingFill,
   RiSparklingLine,
   RiThumbDownFill,
   RiThumbDownLine,
@@ -27,10 +29,9 @@ const GeneratePage: React.FC<GeneratePromps> = ({
   const textOutRef = useRef<HTMLTextAreaElement | null>(null);
   const textInRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [feedbackGiven, setFeedbackGiven] = useState<
-    "none" | "like" | "dislike"
-  >("none");
+  const [loadingSpark, setLoadingSpark] = useState<boolean>(false);
+  const [loadingMagic, setLoadingMagic] = useState<boolean>(false);
+
   const { isSelected, selection } = useSelection(textOutRef);
 
   const disabled = !isSelected || !selection;
@@ -38,7 +39,7 @@ const GeneratePage: React.FC<GeneratePromps> = ({
   const active = reformulationWithHistory.current.isAdditionalSettings;
 
   const generate = async () => {
-    setLoading(true);
+    setLoadingSpark(true);
     if (!reformulationWithHistory.current.textIn) {
       alert("Veuillez entrer le texte à reformuler.");
       return;
@@ -69,6 +70,7 @@ const GeneratePage: React.FC<GeneratePromps> = ({
             textIn: reformulationWithHistory.current.textIn,
             textOut: data ? data.message : "",
             action: "generate",
+            rating: undefined,
           },
         });
       } else {
@@ -79,16 +81,17 @@ const GeneratePage: React.FC<GeneratePromps> = ({
             textIn: reformulationWithHistory.current.textIn,
             textOut: data ? data.message : "",
             action: "generate",
+            rating: undefined,
           },
         });
       }
     }
-    setLoading(false);
+    setLoadingSpark(false);
   };
 
   const reformulate = async () => {
     if (disabled) return;
-    setLoading(true);
+    setLoadingMagic(true);
     const data = await callReformulateApi(
       selection,
       parameters.provider,
@@ -114,9 +117,10 @@ const GeneratePage: React.FC<GeneratePromps> = ({
             )
           : "",
         action: "selection",
+        rating: undefined,
       },
     });
-    setLoading(false);
+    setLoadingMagic(false);
   };
 
   useAutosize(reformulationWithHistory.current.textIn, textInRef);
@@ -167,8 +171,14 @@ const GeneratePage: React.FC<GeneratePromps> = ({
   };
 
   const handleFeedback = (type: "like" | "dislike") => {
-    if (feedbackGiven === "none") {
-      setFeedbackGiven(type);
+    if (reformulationWithHistory.current.rating === undefined) {
+      dispatch({
+        type: "crush",
+        payload: {
+          ...reformulationWithHistory.current,
+          rating: type,
+        },
+      });
       return userFeedback(type, {
         textIn: reformulationWithHistory.current.textIn,
         textOut: reformulationWithHistory.current.textOut,
@@ -200,9 +210,13 @@ const GeneratePage: React.FC<GeneratePromps> = ({
         <button
           onClick={generate}
           className={`relative group block gap-2 text-xs p-2 rounded-full transition-colors duration-200 select-none 
-          hover:text-msem-button  ${loading ? "text-msem-button" : "bg-white"}`}
+          hover:text-msem-button  ${loadingSpark ? "text-msem-button" : "bg-white"}`}
         >
-          <RiSparklingLine size={18} />
+          {loadingSpark ? (
+            <RiSparklingFill size={18} className="animate-spin" />
+          ) : (
+            <RiSparklingLine size={18} />
+          )}
           <span
             className="z-50 pointer-events-none absolute left-full top-1/2 transform -translate-y-1/2 ml-2
             whitespace-nowrap bg-blue-900 text-white text-xs rounded py-1 px-2 opacity-0
@@ -232,10 +246,14 @@ const GeneratePage: React.FC<GeneratePromps> = ({
             <button
               onClick={reformulate}
               className={`relative group block gap-2 text-xs p-2 rounded-full transition-colors duration-200 select-none ${
-                loading ? "text-msem-button" : "bg-white"
+                loadingMagic ? "text-msem-button" : "bg-white"
               } ${!disabled ? "hover:text-msem-button" : "text-slate-300 cursor-not-allowed"}`}
             >
-              <RiMagicLine size={18} />
+              {loadingMagic ? (
+                <RiMagicFill size={18} className="animate-pulse"/>
+              ) : (
+                <RiMagicLine size={18} />
+              )}
               <span
                 className="z-50 pointer-events-none absolute left-full top-1/2 transform -translate-y-1/2 ml-2
                 whitespace-nowrap bg-blue-900 text-white text-xs rounded py-1 px-2 opacity-0
@@ -247,10 +265,10 @@ const GeneratePage: React.FC<GeneratePromps> = ({
             <button
               onClick={() => handleFeedback("like")}
               className={`relative group block gap-2 text-xs p-2 rounded-full transition-colors duration-200 select-none 
-              ${feedbackGiven !== "none" ? "text-gray-300 cursor-not-allowed" : "hover:text-msem-button"}`}
-              disabled={feedbackGiven !== "none"}
+              ${reformulationWithHistory.current.rating !== undefined ? "text-gray-300 cursor-not-allowed" : "hover:text-msem-button"}`}
+              disabled={reformulationWithHistory.current.rating !== undefined}
             >
-              {feedbackGiven === "like" ? (
+              {reformulationWithHistory.current.rating === "like" ? (
                 <RiThumbUpFill size={18} />
               ) : (
                 <RiThumbUpLine size={18} />
@@ -259,10 +277,10 @@ const GeneratePage: React.FC<GeneratePromps> = ({
             <button
               onClick={() => handleFeedback("dislike")}
               className={`relative group block gap-2 text-xs p-2 rounded-full transition-colors duration-200 select-none 
-              ${feedbackGiven !== "none" ? "text-gray-300 cursor-not-allowed" : "hover:text-msem-button"}`}
-              disabled={feedbackGiven !== "none"}
+              ${reformulationWithHistory.current.rating !== undefined ? "text-gray-300 cursor-not-allowed" : "hover:text-msem-button"}`}
+              disabled={reformulationWithHistory.current.rating !== undefined}
             >
-              {feedbackGiven === "dislike" ? (
+              {reformulationWithHistory.current.rating === "dislike" ? (
                 <RiThumbDownFill size={18} />
               ) : (
                 <RiThumbDownLine size={18} />
