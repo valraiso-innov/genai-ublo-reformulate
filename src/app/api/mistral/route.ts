@@ -1,15 +1,16 @@
 import MistralClient from "@mistralai/mistralai";
-import gptAPIReturn from "@/utils/gpt-api-return";
+import llmApiReturn from "@/utils/llm-api-return";
 
 type Payload = {
   messages: Message[];
   model: string;
+  provider: string;
 };
 
 export async function POST(req: Request) {
-  const startTime = Date.now();
+  const startDate = new Date();
   try {
-    const { messages, model } = (await req.json()) as Payload;
+    const { messages, model , provider} = (await req.json()) as Payload;
 
     const client = new MistralClient(process.env.MISTRAL_API_KEY);
     const completion = await client.chat({
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
         })),
       ],
     });
-    return gptAPIReturn(completion, model, startTime);
+    return llmApiReturn(completion, model, startDate, provider);
   } catch (e) {
     console.log(e);
     return new Response((e as Error).message, { status: 500 });

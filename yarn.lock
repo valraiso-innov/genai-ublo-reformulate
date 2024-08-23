@@ -238,6 +238,25 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.5.tgz#105c37d9d9620ce69b7f692a20c821bf1ad2cbf9"
   integrity sha512-sTcG+QZ6fdEUObICavU+aB3Mp8HY4n14wYHdxK4fXjPmv3PXZZeY5RaguJmGyeH/CJQhX3fqKUtS4qc1LoHwhQ==
 
+"@genai-impact/ecologits-mistral@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@genai-impact/ecologits-mistral/-/ecologits-mistral-1.0.9.tgz#bb595043cd7cb719547dc903aae2cdb80cf89dda"
+  integrity sha512-ijqLL6mVO0tlQJNrutUkHrWL/4oLmt6buuCSXE7ikoapZaS/uDttIKvUPSbrQss5XMTpQbI4n0k8j9oTPI5O4w==
+  dependencies:
+    "@genai-impact/ecologits.js" "^2.0.3"
+
+"@genai-impact/ecologits-openai@^4.49.7":
+  version "4.49.7"
+  resolved "https://registry.yarnpkg.com/@genai-impact/ecologits-openai/-/ecologits-openai-4.49.7.tgz#8faad3b74f35cc083cf4b05c775da018cee07c7c"
+  integrity sha512-QaAg7oM7IXUzTZ/DqxdUkw8FOt5QxOkQohnBCO8XwxZMWokd5/iWAYWarb0RuwZHMQuWsphfZLVxolpMZDn0/A==
+  dependencies:
+    "@genai-impact/ecologits.js" "^2.0.3"
+
+"@genai-impact/ecologits.js@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@genai-impact/ecologits.js/-/ecologits.js-2.0.3.tgz#1e693ad602a0f6812e3c228f91a1f870f8e0edde"
+  integrity sha512-iNpp3favFk/4oW+ortP21Q2OYf6sFb/a29ZmAuG//uMDxF3uHgqJK/AdpExqEgjwJAQLoh8yDaS1ficAd9cOtw==
+
 "@humanwhocodes/config-array@^0.11.14":
   version "0.11.14"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.14.tgz#d78e481a039f7566ecc9660b4ea7fe6b1fec442b"

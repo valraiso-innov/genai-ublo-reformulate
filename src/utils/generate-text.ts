@@ -30,6 +30,7 @@ async function callGenerateApi(messages: Message[], provider: string, model: str
     body: JSON.stringify({
       messages,
       model,
+      provider,
     }),
   });
   return await completion.json();
@@ -67,7 +68,6 @@ export async function generateText(
 }
 
 export async function callReformulateApi(selection: string, provider: string, model: string) {
-  console.log(selection);
   const authToken = sessionStorage.getItem("token") || "";
   const endpoint = provider === "mistral" ? "/api/mistral/selection" : "/api/openai/selection";
   const completion = await fetch(endpoint, {
@@ -79,6 +79,7 @@ export async function callReformulateApi(selection: string, provider: string, mo
     body: JSON.stringify({
       selection,
       model,
+      provider,
     }),
   });
   return await completion.json();

@@ -1,9 +1,10 @@
 import OpenAI from "openai";
-import gptAPIReturn from "@/utils/gpt-api-return";
+import llmApiReturn from "@/utils/llm-api-return";
 
 type Payload = {
   selection: string;
   model: string;
+  provider: string;
 };
 
 const openai = new OpenAI({
@@ -11,9 +12,9 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const startTime = Date.now();
+  const startDate = new Date();
   try {
-    const { selection, model } = (await req.json()) as Payload;
+    const { selection, model , provider} = (await req.json()) as Payload;
 
     const completion = await openai.chat.completions.create({
       model: model,
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
         { role: "user", content: selection },
       ],
     });
-    return gptAPIReturn(completion, model, startTime);
+    return llmApiReturn(completion, model, startDate, provider);
   } catch (e) {
     console.log(e);
     return new Response((e as Error).message, { status: 500 });

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { generateText, callReformulateApi } from "@/utils/generate-text";
+import React, {useRef, useState} from "react";
+import {generateText, callReformulateApi} from "@/utils/generate-text";
 import {
+  RiLeafLine,
   RiMagicFill,
   RiMagicLine,
   RiSparklingFill,
@@ -14,8 +15,9 @@ import {
 } from "@remixicon/react";
 import HistoricButton from "@/components/historic-button";
 import useSelection from "@/hooks/use-selection";
-import { userAction, userFeedback } from "@/services/analytics-api";
+import {userAction, userFeedback} from "@/services/analytics-api";
 import useAutosize from "@/hooks/use-autosize";
+import {MetricsVisualizer} from "@/components/metrics-visualizer";
 
 interface GeneratePromps {
   dispatch: React.Dispatch<Action>;
@@ -23,16 +25,17 @@ interface GeneratePromps {
 }
 
 const GeneratePage: React.FC<GeneratePromps> = ({
-  dispatch,
-  reformulationWithHistory,
-}) => {
+                                                  dispatch,
+                                                  reformulationWithHistory,
+                                                }) => {
   const textOutRef = useRef<HTMLTextAreaElement | null>(null);
   const textInRef = useRef<HTMLTextAreaElement | null>(null);
-
+  const [metrics, setMetrics] = useState<Metrics>();
+  const [showMetrics, setShowMetrics] = useState(false);
   const [loadingSpark, setLoadingSpark] = useState<boolean>(false);
   const [loadingMagic, setLoadingMagic] = useState<boolean>(false);
 
-  const { isSelected, selection } = useSelection(textOutRef);
+  const {isSelected, selection} = useSelection(textOutRef);
 
   const disabled = !isSelected || !selection;
   const parameters = reformulationWithHistory.current.parameters;
@@ -53,6 +56,7 @@ const GeneratePage: React.FC<GeneratePromps> = ({
         active.isKeywordsEnabled ? parameters.keywords : undefined,
         active.isForbiddenEnabled ? parameters.forbiddenWords : undefined,
       );
+      setMetrics(data.metrics);
       await userAction("rephrase-generate", {
         textIn: reformulationWithHistory.current.textIn,
         textOut: data.message,
@@ -97,6 +101,7 @@ const GeneratePage: React.FC<GeneratePromps> = ({
       parameters.provider,
       parameters.model,
     );
+    setMetrics(data.metrics);
     await userAction("rephrase-generate", {
       textIn: reformulationWithHistory.current.textIn,
       textOut: data.message,
@@ -112,9 +117,9 @@ const GeneratePage: React.FC<GeneratePromps> = ({
         textIn: reformulationWithHistory.current.textIn,
         textOut: data
           ? reformulationWithHistory.current.textOut.replace(
-              selection,
-              data.message,
-            )
+            selection,
+            data.message,
+          )
           : "",
         action: "selection",
         rating: undefined,
@@ -210,12 +215,14 @@ const GeneratePage: React.FC<GeneratePromps> = ({
         <button
           onClick={generate}
           className={`relative group block gap-2 text-xs p-2 rounded-full transition-colors duration-200 select-none 
-          hover:text-msem-button  ${loadingSpark ? "text-msem-button" : "bg-white"}`}
+            ${loadingSpark ? "text-msem-button" : "bg-white"} 
+            ${!reformulationWithHistory.current.textIn ? "text-gray-200 cursor-not-allowed" : "hover:text-msem-button"}`}
+          disabled={!reformulationWithHistory.current.textIn}
         >
           {loadingSpark ? (
-            <RiSparklingFill size={18} className="animate-spin" />
+            <RiSparklingFill size={18} className="animate-spin"/>
           ) : (
-            <RiSparklingLine size={18} />
+            <RiSparklingLine size={18}/>
           )}
           <span
             className="z-50 pointer-events-none absolute left-full top-1/2 transform -translate-y-1/2 ml-2
@@ -225,7 +232,24 @@ const GeneratePage: React.FC<GeneratePromps> = ({
             Reformuler le texte complet
           </span>
         </button>
+        <button
+          onClick={() => setShowMetrics(!showMetrics)}
+          className={`relative group block gap-2 text-xs p-2 rounded-full transition-colors duration-200 select-none 
+           ${!metrics ? "text-gray-200 cursor-not-allowed" : "hover:text-msem-button"}`}
+          disabled={!metrics}
+        >
+          <RiLeafLine/>
+          <span
+            className="z-50 pointer-events-none absolute left-full top-1/2 transform -translate-y-1/2 ml-2
+            whitespace-nowrap bg-blue-900 text-white text-xs rounded py-1 px-2 opacity-0
+            group-hover:opacity-100 transition-opacity duration-300"
+          >
+            Voir l&apos;impact de la génération
+          </span>
+        </button>
       </div>
+      {showMetrics && metrics ? (
+        <MetricsVisualizer metrics={metrics} onClose={() => setShowMetrics(!showMetrics)}/>) : ""}
       {reformulationWithHistory.current.textOut && (
         <div className="bg-white">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -252,7 +276,7 @@ const GeneratePage: React.FC<GeneratePromps> = ({
               {loadingMagic ? (
                 <RiMagicFill size={18} className="animate-pulse"/>
               ) : (
-                <RiMagicLine size={18} />
+                <RiMagicLine size={18}/>
               )}
               <span
                 className="z-50 pointer-events-none absolute left-full top-1/2 transform -translate-y-1/2 ml-2
@@ -269,9 +293,9 @@ const GeneratePage: React.FC<GeneratePromps> = ({
               disabled={reformulationWithHistory.current.rating !== undefined}
             >
               {reformulationWithHistory.current.rating === "like" ? (
-                <RiThumbUpFill size={18} />
+                <RiThumbUpFill size={18}/>
               ) : (
-                <RiThumbUpLine size={18} />
+                <RiThumbUpLine size={18}/>
               )}
             </button>
             <button
@@ -281,9 +305,9 @@ const GeneratePage: React.FC<GeneratePromps> = ({
               disabled={reformulationWithHistory.current.rating !== undefined}
             >
               {reformulationWithHistory.current.rating === "dislike" ? (
-                <RiThumbDownFill size={18} />
+                <RiThumbDownFill size={18}/>
               ) : (
-                <RiThumbDownLine size={18} />
+                <RiThumbDownLine size={18}/>
               )}
             </button>
           </div>

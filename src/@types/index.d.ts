@@ -52,3 +52,14 @@ type AdditionalSettingsEnabled = {
   isKeywordsEnabled: boolean;
   isForbiddenEnabled: boolean;
 };
+
+interface Metrics {
+  cost_euro: number;
+  executionTime_s: number;
+  energy_wh: number;
+  gwp_gco2eq: number;
+  promptTokens: number;
+  completionTokens: number;
+  adpe_kgsbeq: number;
+  pe_mj: number;
+}
