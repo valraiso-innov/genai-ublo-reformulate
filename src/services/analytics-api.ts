@@ -60,7 +60,6 @@ export function userFeedback(type: Feedback, props: FeedbackProps) {
 }
 
 type Impacts = {
-  textIn: number;
   model: string;
   cost_euro: number;
   executionTime_s: number;

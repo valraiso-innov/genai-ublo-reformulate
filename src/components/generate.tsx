@@ -15,7 +15,7 @@ import {
 } from "@remixicon/react";
 import HistoricButton from "@/components/historic-button";
 import useSelection from "@/hooks/use-selection";
-import {userAction, userFeedback} from "@/services/analytics-api";
+import {impacts, userAction, userFeedback} from "@/services/analytics-api";
 import useAutosize from "@/hooks/use-autosize";
 import {MetricsVisualizer} from "@/components/metrics-visualizer";
 
@@ -57,6 +57,7 @@ const GeneratePage: React.FC<GeneratePromps> = ({
         active.isForbiddenEnabled ? parameters.forbiddenWords : undefined,
       );
       setMetrics(data.metrics);
+      await impacts({model: parameters.model, ...data.metrics});
       await userAction("rephrase-generate", {
         textIn: reformulationWithHistory.current.textIn,
         textOut: data.message,
@@ -102,6 +103,7 @@ const GeneratePage: React.FC<GeneratePromps> = ({
       parameters.model,
     );
     setMetrics(data.metrics);
+    await impacts({model: parameters.model, ...data.metrics});
     await userAction("rephrase-generate", {
       textIn: reformulationWithHistory.current.textIn,
       textOut: data.message,
